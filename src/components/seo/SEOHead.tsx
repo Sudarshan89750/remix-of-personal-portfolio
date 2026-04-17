@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { photographerInfo } from '@/data/photographer';
+import { brand } from '@/data/brand';
 
 interface SEOHeadProps {
   title?: string;
@@ -9,67 +9,62 @@ interface SEOHeadProps {
   type?: 'website' | 'article';
 }
 
-/**
- * SEO component for managing page meta tags
- * Handles title, description, and Open Graph tags
- */
-export function SEOHead({ 
-  title, 
-  description, 
-  // Photo by Oyemike Princewill on Unsplash
-  image = 'https://images.unsplash.com/photo-1662333085102-f6ae3be21c91?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MDA2OTF8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NjI3Njk1NjB8&ixlib=rb-4.1.0&q=80&w=1080',
-  type = 'website'
+export function SEOHead({
+  title,
+  description,
+  image = 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&w=1600&q=80',
+  type = 'website',
 }: SEOHeadProps) {
   const location = useLocation();
-  
-  const fullTitle = title 
-    ? `${title} | ${photographerInfo.name}` 
-    : `${photographerInfo.name} - ${photographerInfo.tagline}`;
-  
-  const defaultDescription = photographerInfo.heroIntroduction;
-  const fullDescription = description || defaultDescription;
-  
-  const baseUrl = window.location.origin;
+
+  const fullTitle = title
+    ? `${title} \u00b7 ${brand.name}`
+    : `${brand.name} \u2014 ${brand.tagline}`;
+  const fullDescription = description || brand.shortDescription;
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
   const fullUrl = `${baseUrl}${location.pathname}`;
 
   useEffect(() => {
-    // Update document title
     document.title = fullTitle;
 
-    // Update or create meta tags
-    const updateMetaTag = (name: string, content: string, isProperty = false) => {
-      const attribute = isProperty ? 'property' : 'name';
-      let element = document.querySelector(`meta[${attribute}="${name}"]`);
-      
-      if (!element) {
-        element = document.createElement('meta');
-        element.setAttribute(attribute, name);
-        document.head.appendChild(element);
+    const setMeta = (name: string, content: string, isProperty = false) => {
+      const attr = isProperty ? 'property' : 'name';
+      let el = document.querySelector(`meta[${attr}="${name}"]`);
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attr, name);
+        document.head.appendChild(el);
       }
-      
-      element.setAttribute('content', content);
+      el.setAttribute('content', content);
     };
 
-    // Standard meta tags
-    updateMetaTag('description', fullDescription);
-    
-    // Open Graph tags
-    updateMetaTag('og:title', fullTitle, true);
-    updateMetaTag('og:description', fullDescription, true);
-    updateMetaTag('og:type', type, true);
-    updateMetaTag('og:url', fullUrl, true);
-    updateMetaTag('og:image', image, true);
-    updateMetaTag('og:site_name', photographerInfo.name, true);
-    
-    // Twitter Card tags
-    updateMetaTag('twitter:card', 'summary_large_image');
-    updateMetaTag('twitter:title', fullTitle);
-    updateMetaTag('twitter:description', fullDescription);
-    updateMetaTag('twitter:image', image);
+    setMeta('description', fullDescription);
+    setMeta('og:title', fullTitle, true);
+    setMeta('og:description', fullDescription, true);
+    setMeta('og:type', type, true);
+    setMeta('og:url', fullUrl, true);
+    setMeta('og:image', image, true);
+    setMeta('og:site_name', brand.name, true);
+    setMeta('twitter:card', 'summary_large_image');
+    setMeta('twitter:title', fullTitle);
+    setMeta('twitter:description', fullDescription);
+    setMeta('twitter:image', image);
+    setMeta('author', brand.name);
+    setMeta(
+      'keywords',
+      'photography competition, India, engagement-based, photographer jobs, photography marketplace, photo gigs'
+    );
 
-    // Additional SEO tags
-    updateMetaTag('author', photographerInfo.name);
-    updateMetaTag('keywords', `photography, ${photographerInfo.name}, professional photographer, ${photographerInfo.tagline}`);
+    // Canonical
+    let canonical = document.querySelector(
+      'link[rel="canonical"]'
+    ) as HTMLLinkElement | null;
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', fullUrl);
   }, [fullTitle, fullDescription, fullUrl, image, type]);
 
   return null;
