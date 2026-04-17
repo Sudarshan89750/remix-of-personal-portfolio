@@ -12,15 +12,19 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AnimatePresence } from "framer-motion";
 import { lazy, Suspense } from "react";
 
-// Code-split route components for better performance
-const Index = lazy(() => import("./pages/Index"));
-const Portfolio = lazy(() => import("./pages/Portfolio"));
-const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
-const About = lazy(() => import("./pages/About"));
-const Contact = lazy(() => import("./pages/Contact"));
+const Home = lazy(() => import("./pages/Home"));
+const Competitions = lazy(() => import("./pages/Competitions"));
+const CompetitionDetail = lazy(() => import("./pages/CompetitionDetail"));
+const Jobs = lazy(() => import("./pages/Jobs"));
+const Marketplace = lazy(() => import("./pages/Marketplace"));
+const Network = lazy(() => import("./pages/Network"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Auth = lazy(() => import("./pages/Auth"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
+
+const wrap = (node: React.ReactNode) => <PageTransition>{node}</PageTransition>;
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -28,54 +32,15 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route
-          path="/"
-          element={
-            <PageTransition>
-              <Index />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/portfolio"
-          element={
-            <PageTransition>
-              <Portfolio />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/project/:slug"
-          element={
-            <PageTransition>
-              <ProjectDetail />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <PageTransition>
-              <About />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/contact"
-          element={
-            <PageTransition>
-              <Contact />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <PageTransition>
-              <NotFound />
-            </PageTransition>
-          }
-        />
+        <Route path="/" element={wrap(<Home />)} />
+        <Route path="/competitions" element={wrap(<Competitions />)} />
+        <Route path="/competitions/:slug" element={wrap(<CompetitionDetail />)} />
+        <Route path="/jobs" element={wrap(<Jobs />)} />
+        <Route path="/marketplace" element={wrap(<Marketplace />)} />
+        <Route path="/network" element={wrap(<Network />)} />
+        <Route path="/dashboard" element={wrap(<Dashboard />)} />
+        <Route path="/auth" element={wrap(<Auth />)} />
+        <Route path="*" element={wrap(<NotFound />)} />
       </Routes>
     </AnimatePresence>
   );
