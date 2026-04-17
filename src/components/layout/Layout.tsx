@@ -8,25 +8,35 @@ interface LayoutProps {
 }
 
 /**
- * Main layout wrapper component
- * Provides consistent header and footer across all pages
- * Homepage removes top padding to allow header overlay on hero
+ * Pages that handle their own top spacing / chrome.
+ * Hero-driven home, full-bleed auth, and hero-style competition detail
+ * shouldn't get the default top padding from the main wrapper.
  */
+const FULL_BLEED_ROUTES = ['/', '/auth'];
+const FULL_BLEED_PREFIXES = ['/competitions/'];
+
+const isFullBleed = (path: string) =>
+  FULL_BLEED_ROUTES.includes(path) ||
+  FULL_BLEED_PREFIXES.some((p) => path.startsWith(p));
+
+const HIDE_FOOTER = ['/auth'];
+
 export function Layout({ children }: LayoutProps) {
   const location = useLocation();
-  const isHomepage = location.pathname === '/';
+  const fullBleed = isFullBleed(location.pathname);
+  const hideFooter = HIDE_FOOTER.includes(location.pathname);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      <main 
-        id="main-content" 
-        className={`flex-1 ${isHomepage ? '' : 'pt-16'}`}
+      <main
+        id="main-content"
+        className={`flex-1 ${fullBleed ? '' : 'pt-16'}`}
         tabIndex={-1}
       >
         {children}
       </main>
-      <Footer />
+      {!hideFooter && <Footer />}
     </div>
   );
 }
