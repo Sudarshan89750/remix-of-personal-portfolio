@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Header } from '../components/layout/Header';
+import { Footer } from '../components/layout/Footer';
+import { HeroSection } from '../components/sections/HeroSection';
+import { MarqueeStrip } from '../components/sections/MarqueeStrip';
+import { CompetitionSection } from '../components/sections/CompetitionSection';
+import { HowItWorks } from '../components/sections/HowItWorks';
+import { ScoringSection } from '../components/sections/ScoringSection';
+import { WhyPhotoGigs } from '../components/sections/WhyPhotoGigs';
+import { RegistrationSection } from '../components/sections/RegistrationSection';
+import { FinalCTA } from '../components/sections/FinalCTA';
+import { db } from '../db/index.server';
+import { competitions } from '../db/schema';
+import { desc } from 'drizzle-orm';
+
+let competition = null;
+
+try {
+  const latest = await db
+    .select()
+    .from(competitions)
+    .orderBy(desc(competitions.id))
+    .limit(1);
+
+  if (latest.length > 0) {
+    competition = latest[0];
+  }
+} catch (error) {
+  console.error("Database connection failed:", error);
+}
+
+// Ensure competition exists or show a 404/Empty state
+// (No hardcoded fallback here as per "no static info" rule)
+
+---
+
+<BaseLayout 
+  title="Compete. Create. Win." 
+  description={competition ? `India's first engagement-based photography competition. ${competition.season} is live.` : undefined}
+>
+  <Header season={competition?.season} client:load />
+  
+  <main>
+    {competition ? (
+      <>
+        <HeroSection competition={competition} client:load />
+        <MarqueeStrip client:visible />
+        <CompetitionSection competition={competition} client:visible />
+        <HowItWorks competition={competition} client:visible />
+        <ScoringSection competition={competition} client:visible />
+        <WhyPhotoGigs client:visible />
+        <RegistrationSection competition={competition} client:visible />
+        <FinalCTA competition={competition} client:visible />
+      </>
+    ) : (
+      <div class="min-h-[80vh] grid place-items-center px-6 text-center pt-20">
+        <div>
+          <h1 class="font-display text-5xl md:text-7xl lg:text-8xl">Between seasons.</h1>
+          <p class="mt-6 text-muted-foreground text-lg max-w-md mx-auto">
+            The next PhotoGigs season drops soon. Check back shortly or follow us on Instagram.
+          </p>
+        </div>
+      </div>
+    )}
+  </main>
+
+  <Footer season={competition?.season} />
+</BaseLayout>

@@ -1,3 +1,4 @@
+import React, { type ReactNode } from 'react';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 import type { Competition } from '@/data/competitions';
 
@@ -21,9 +22,9 @@ export function ScoringSection({ competition }: Props) {
               The scoreboard is <em className="italic">public</em>.
             </h2>
             <p className="mt-5 text-base md:text-lg text-muted-foreground leading-relaxed text-pretty">
-              No anonymous jury. No \u201cwinner\u2019s choice\u201d emails.
+              No anonymous jury. No “winner’s choice” emails.
               Every entry is scored by a weighted blend of real platform
-              metrics, pulled directly from Instagram and YouTube APIs and
+              metrics, pulled directly from Instagram API and
               published live.
             </p>
             <ul className="mt-8 space-y-3 text-sm">
@@ -82,7 +83,7 @@ export function ScoringSection({ competition }: Props) {
   );
 }
 
-function Pill({ children }: { children: React.ReactNode }) {
+function Pill({ children }: { children: ReactNode }) {
   return (
     <li className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3.5 py-1.5 text-foreground/85 mr-2">
       <span className="size-1.5 rounded-full bg-foreground" />

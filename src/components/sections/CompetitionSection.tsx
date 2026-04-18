@@ -1,5 +1,4 @@
 import { ArrowUpRight, Trophy } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 import {
@@ -33,21 +32,20 @@ export function CompetitionSection({ competition }: Props) {
               </span>
             </h2>
             <p className="mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed text-pretty">
-              {competition.description} Post on Instagram Reels or YouTube
-              Shorts with{' '}
+              {competition.description} Post on Instagram Reels with{' '}
               <span className="text-foreground font-medium">
                 {competition.hashtag}
               </span>
-              . The post with the highest engagement \u2014 measured by our
-              public API \u2014 takes the prize.
+              . The post with the highest engagement — measured by our
+              public API — takes the prize.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
               <Button asChild size="lg" className="rounded-full px-6 h-12">
-                <Link to="/#register">
+                <a href="/#register">
                   Register now
                   <ArrowUpRight className="ml-1 size-4" />
-                </Link>
+                </a>
               </Button>
               <Button
                 asChild
@@ -55,7 +53,7 @@ export function CompetitionSection({ competition }: Props) {
                 size="lg"
                 className="rounded-full px-6 h-12"
               >
-                <Link to="/#how-it-works">How it works</Link>
+                <a href="/#how-it-works">How it works</a>
               </Button>
             </div>
           </ScrollReveal>
@@ -71,13 +69,13 @@ export function CompetitionSection({ competition }: Props) {
               <dl className="space-y-7">
                 <Row
                   k="Prize pool"
-                  v={formatINR(competition.prizeINR)}
+                  v={competition.prizeDescription || formatINR(competition.prizeINR)}
                   big
                 />
                 <Row k="Entry fee" v={formatINR(competition.entryFeeINR)} />
                 <Row k="Deadline" v={formatDeadline(competition.deadline)} />
                 <Row k="Hashtag" v={competition.hashtag} mono />
-                <Row k="Platforms" v={competition.platforms.join(' \u00b7 ')} />
+                <Row k="Platforms" v={(competition.platforms as string[]).join(' \u00b7 ')} />
               </dl>
             </div>
           </ScrollReveal>

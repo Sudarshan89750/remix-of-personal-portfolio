@@ -1,4 +1,3 @@
-import { Link, useLocation } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -11,17 +10,19 @@ import { cn } from '@/lib/utils';
 
 const navLinks = [
   { name: 'Competitions', path: '/competitions' },
-  { name: 'Jobs', path: '/jobs' },
-  { name: 'Marketplace', path: '/marketplace' },
   { name: 'How it works', path: '/#how-it-works', hash: true },
 ];
 
-export function Header() {
-  const location = useLocation();
+interface Props {
+  season?: string;
+}
+
+export function Header({ season }: Props) {
   const { isScrolled } = useScrollPosition();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
 
-  const isHome = location.pathname === '/';
+  const isHome = currentPath === '/';
   const isTransparent = isHome && !isScrolled;
 
   return (
@@ -38,15 +39,16 @@ export function Header() {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link
-            to="/"
+          <a
+            href="/"
             className={cn(
               'group inline-flex items-baseline gap-2 transition-colors',
               isTransparent ? 'text-white' : 'text-foreground'
             )}
           >
+            <img src="/Favicon.png" alt="PhotoGigs" className="w-8 h-8 object-contain" />
             <span className="font-display text-2xl leading-none">
-              {brand.name}
+              PhotoGigs
             </span>
             <span
               className={cn(
@@ -54,15 +56,15 @@ export function Header() {
                 isTransparent ? 'text-white/60' : 'text-muted-foreground'
               )}
             >
-              S01 / live
+              {season ? `${season.replace('Season ', 'S')} / live` : 'Archive'}
             </span>
-          </Link>
+          </a>
 
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <Link
+              <a
                 key={link.path}
-                to={link.path}
+                href={link.path}
                 className={cn(
                   'text-sm font-medium tracking-tight transition-colors',
                   isTransparent
@@ -71,16 +73,9 @@ export function Header() {
                 )}
               >
                 {link.name}
-              </Link>
+              </a>
             ))}
             <ThemeToggle />
-            <Button
-              asChild
-              size="sm"
-              className="rounded-full px-5 font-medium"
-            >
-              <Link to="/auth">Sign in</Link>
-            </Button>
           </nav>
 
           <div className="md:hidden flex items-center gap-2">
@@ -100,27 +95,23 @@ export function Header() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-full sm:w-80">
-                <div className="font-display text-3xl mt-2 mb-8">
-                  {brand.name}
+                <div className="flex items-center gap-2 mt-2 mb-8">
+                  <img src="/Favicon.png" alt="PhotoGigs" className="w-8 h-8 object-contain" />
+                  <div className="font-display text-3xl">
+                    PhotoGigs
+                  </div>
                 </div>
                 <nav className="flex flex-col gap-5">
                   {navLinks.map((link) => (
-                    <Link
+                    <a
                       key={link.path}
-                      to={link.path}
+                      href={link.path}
                       onClick={() => setMobileMenuOpen(false)}
                       className="text-lg tracking-tight text-foreground/85 hover:text-foreground"
                     >
                       {link.name}
-                    </Link>
+                    </a>
                   ))}
-                  <Link
-                    to="/auth"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-lg tracking-tight text-foreground/85 hover:text-foreground"
-                  >
-                    Sign in
-                  </Link>
                 </nav>
               </SheetContent>
             </Sheet>

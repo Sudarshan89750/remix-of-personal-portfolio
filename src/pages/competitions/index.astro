@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { Header } from '../../components/layout/Header';
+import { Footer } from '../../components/layout/Footer';
+import { db } from '../../db/index.server';
+import { competitions as competitionsTable } from '../../db/schema';
+import { desc } from 'drizzle-orm';
+import { formatINR } from '../../data/competitions';
+import { FeaturedCompetitionCard } from '../../components/sections/FeaturedCompetitionCard';
+import { CompetitionRow } from '../../components/sections/CompetitionRow';
+import { Metric } from '../../components/ui/Metric';
+import type { CompetitionStatus } from '../../data/competitions';
+
+const allCompetitions = await db.select().from(competitionsTable).orderBy(desc(competitionsTable.id));
+
+const featured = allCompetitions[0];
+const rest = allCompetitions.slice(1);
+
+const totalPrizePool = allCompetitions.reduce((s, c) => s + c.prizeINR, 0);
+const openCount = allCompetitions.filter((c) => c.status === 'open').length;
+const upcomingCount = allCompetitions.filter((c) => c.status === 'upcoming').length;
+---
+
+<BaseLayout title="Competitions" description="Every PhotoGigs season — live, upcoming and past.">
+  <Header season={featured?.season} client:load />
+
+  <main>
+    {/* ============ EDITORIAL HEADER ============ */}
+    <section class="relative overflow-hidden border-b border-border/60">
+      <div class="absolute inset-0 -z-10">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--foreground)/0.06),transparent_55%)]"></div>
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border)/0.4)_1px,transparent_1px)] bg-[size:80px_80px] opacity-30"></div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 pt-32 pb-20">
+        <div class="grid lg:grid-cols-12 gap-12 items-end">
+          <div class="lg:col-span-8">
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                Vol. 01 · The Index
+              </span>
+              <span class="h-px w-10 bg-border"></span>
+              <span class="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                {allCompetitions.length} seasons
+              </span>
+            </div>
+
+            <h1 class="font-display text-balance mt-6 text-[clamp(3rem,8vw,7rem)] leading-[0.92]">
+              Every season,<br />
+              <em class="italic text-muted-foreground">on the record.</em>
+            </h1>
+
+            <p class="mt-7 max-w-xl text-lg md:text-xl leading-relaxed text-muted-foreground text-pretty">
+              Open briefs, the ones we're cooking next, and the archive of
+              what already happened. Public scores. Public winners.
+            </p>
+          </div>
+
+          <div class="lg:col-span-4 grid grid-cols-3 gap-4">
+            <Metric label="Total prizes" value={formatINR(totalPrizePool)} />
+            <Metric label="Live now" value={String(openCount).padStart(2, '0')} />
+            <Metric label="Upcoming" value={String(upcomingCount).padStart(2, '0')} />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ============ FEATURED ============ */}
+    {featured && (
+      <section class="border-b border-border/60">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-20">
+          <FeaturedCompetitionCard competition={featured} client:load />
+        </div>
+      </section>
+    )}
+
+    {/* ============ THE INDEX ============ */}
+    <section>
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 py-20">
+        <div class="flex items-end justify-between mb-10">
+          <div>
+            <p class="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+              The archive
+            </p>
+            <h2 class="font-display text-5xl md:text-6xl mt-2 leading-none">
+              Past, present, <em class="italic text-muted-foreground">pending.</em>
+            </h2>
+          </div>
+          <span class="hidden md:inline font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+            {String(rest.length).padStart(2, '0')} entries
+          </span>
+        </div>
+
+        <div class="border-t border-border">
+          {rest.map((c, i) => (
+            <CompetitionRow competition={c} index={i + 1} client:visible />
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer season={featured?.season} />
+</BaseLayout>

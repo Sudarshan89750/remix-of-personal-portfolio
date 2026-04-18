@@ -69,14 +69,14 @@
  * - Focus management
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button-1";
 import clsx from "clsx";
 
 type TOverflowType = "x" | "y" | "both";
 
 interface ScrollerProps {
-  children: React.ReactNode;
+  children: ReactNode;
   overflow: TOverflowType;
   height?: number | string;
   width?: number | string;

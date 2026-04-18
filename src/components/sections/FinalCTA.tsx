@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
@@ -27,27 +26,19 @@ export function FinalCTA({ competition }: Props) {
             photographer in this country is one upload away from being noticed.
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-            <Button
-              asChild
-              size="lg"
-              variant="secondary"
-              className="rounded-full px-7 h-12 text-base font-medium"
+            <a 
+              href="/#register"
+              className="inline-flex items-center justify-center rounded-full px-7 h-12 text-base font-medium bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-colors"
             >
-              <Link to="/#register">
-                Register for {formatINR(competition.entryFeeINR)}
-                <ArrowUpRight className="ml-1 size-4" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="rounded-full px-7 h-12 text-base font-medium border-background/40 bg-transparent text-background hover:bg-background/10 hover:text-background"
+              Register for {formatINR(competition.entryFeeINR)}
+              <ArrowUpRight className="ml-1 size-4" />
+            </a>
+            <a
+              href={`/competitions/${competition.slug}`}
+              className="inline-flex items-center justify-center rounded-full px-7 h-12 text-base font-medium border border-background/40 bg-transparent text-background hover:bg-background/10 transition-colors"
             >
-              <Link to={`/competitions/${competition.slug}`}>
-                View details
-              </Link>
-            </Button>
+              View details
+            </a>
           </div>
         </ScrollReveal>
       </div>

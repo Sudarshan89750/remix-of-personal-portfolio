@@ -1,0 +1,58 @@
+---
+import { brand } from '../data/brand';
+import '../styles/global.css';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { title = brand.name, description = brand.shortDescription } = Astro.props;
+const siteTitle = title === brand.name ? title : `${title} | ${brand.name}`;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/png" href="/Favicon.png" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{siteTitle}</title>
+		<meta name="description" content={description} />
+		
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+	</head>
+	<body class="bg-background text-foreground font-sans antialiased">
+		<slot />
+		
+		<script is:inline>
+			const getTheme = () => {
+				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+					return localStorage.getItem('theme');
+				}
+				if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+					return 'dark';
+				}
+				return 'light';
+			};
+			const theme = getTheme();
+			if (theme === 'dark') {
+				document.documentElement.classList.add('dark');
+			} else {
+				document.documentElement.classList.remove('dark');
+			}
+		</script>
+	</body>
+</html>
+
+<style is:global>
+	* {
+		border-color: var(--border);
+	}
+	body {
+		font-feature-settings: "ss01", "cv11";
+	}
+</style>

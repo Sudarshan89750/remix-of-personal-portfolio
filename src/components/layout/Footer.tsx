@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom';
-import { Instagram } from 'lucide-react';
+import { FaInstagram } from 'react-icons/fa6';
 import { brand } from '@/data/brand';
 
 const groups = [
@@ -16,7 +15,6 @@ const groups = [
     title: 'Company',
     links: [
       { name: 'About', href: '/about' },
-      { name: 'Blog', href: '/blog' },
       { name: 'Contact', href: '/contact' },
     ],
   },
@@ -26,12 +24,15 @@ const groups = [
       { name: 'Privacy Policy', href: '/legal/privacy' },
       { name: 'Terms of Service', href: '/legal/terms' },
       { name: 'Competition Rules', href: '/legal/rules' },
-      { name: 'Refund Policy', href: '/legal/refund' },
     ],
   },
 ];
 
-export function Footer() {
+interface Props {
+  season?: string;
+}
+
+export function Footer({ season }: Props) {
   const year = new Date().getFullYear();
 
   return (
@@ -39,12 +40,13 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 md:gap-12">
           <div className="col-span-2">
-            <Link to="/" className="font-display text-3xl leading-none">
-              {brand.name}
-            </Link>
+            <a href="/" className="flex items-center gap-2 font-display text-3xl leading-none">
+              <img src="/Favicon.png" alt="PhotoGigs" className="w-8 h-8 object-contain" />
+              <span>PhotoGigs</span>
+            </a>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground leading-relaxed">
               {brand.shortDescription} Built in India for photographers who
-              want their work \u2014 not their network \u2014 to do the talking.
+              want their work — not their network — to do the talking.
             </p>
             <a
               href={brand.social.instagram}
@@ -53,7 +55,7 @@ export function Footer() {
               className="mt-6 inline-flex items-center gap-2 text-sm text-foreground/70 hover:text-foreground transition-colors"
               aria-label="Instagram"
             >
-              <Instagram className="size-4" />
+              <FaInstagram className="size-4" />
               <span>@photogigs</span>
             </a>
           </div>
@@ -66,12 +68,12 @@ export function Footer() {
               <ul className="space-y-3">
                 {group.links.map((link) => (
                   <li key={link.href}>
-                    <Link
-                      to={link.href}
+                    <a
+                      href={link.href}
                       className="text-sm text-foreground/80 hover:text-foreground transition-colors"
                     >
                       {link.name}
-                    </Link>
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -81,10 +83,10 @@ export function Footer() {
 
         <div className="mt-14 pt-6 border-t border-border/60 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
           <p className="text-xs text-muted-foreground">
-            \u00a9 {year} {brand.name}. Made by photographers, for photographers.
+            © {year} {brand.name}. Made by photographers, for photographers.
           </p>
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            S01 \u00b7 {brand.hashtag}
+            {season ? season.replace('Season ', 'S') : 'Archive'} · {brand.hashtag}
           </p>
         </div>
       </div>

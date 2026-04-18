@@ -139,9 +139,9 @@ export interface ButtonProps {
   variant?: "styled" | "unstyled";
   shape?: keyof typeof shapes;
   svgOnly?: boolean;
-  children?: React.ReactNode;
-  prefix?: React.ReactNode;
-  suffix?: React.ReactNode;
+  children?: ReactNode;
+  prefix?: ReactNode;
+  suffix?: ReactNode;
   shadow?: boolean;
   loading?: boolean;
   disabled?: boolean;

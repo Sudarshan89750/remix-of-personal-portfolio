@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SEOHead } from '@/components/seo/SEOHead';
@@ -39,11 +38,9 @@ export function ComingSoon({ title, kicker, description, bullets }: Props) {
             </ul>
           )}
           <div className="mt-10">
-            <Button asChild size="lg" className="rounded-full px-6 h-12">
-              <Link to="/">
-                <ArrowLeft className="mr-1 size-4" /> Back to season 01
-              </Link>
-            </Button>
+            <a href="/" className="inline-flex items-center justify-center rounded-full px-6 h-12 bg-primary text-primary-foreground hover:bg-primary/90">
+              <ArrowLeft className="mr-1 size-4" /> Back to season 01
+            </a>
           </div>
         </div>
       </section>

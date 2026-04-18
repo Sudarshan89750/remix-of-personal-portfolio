@@ -25,7 +25,7 @@ export function MarqueeStrip() {
             >
               {text}
               <span aria-hidden className="opacity-40">
-                \u2715
+                ✕
               </span>
             </span>
           ))}
@@ -37,7 +37,7 @@ export function MarqueeStrip() {
               className="font-mono text-[11px] uppercase tracking-[0.28em] inline-flex items-center gap-10"
             >
               {text}
-              <span className="opacity-40">\u2715</span>
+              <span className="opacity-40">✕</span>
             </span>
           ))}
         </div>

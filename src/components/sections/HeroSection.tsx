@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import { ArrowUpRight, Sparkles } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   formatDeadline,
@@ -23,11 +22,11 @@ export function HeroSection({ competition }: Props) {
           loop
           playsInline
           preload="metadata"
-          poster="https://images.pexels.com/videos/2675516/free-video-2675516.jpg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200"
+          poster={competition.heroPosterUrl || "https://images.pexels.com/videos/2675516/free-video-2675516.jpg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200"}
           className="w-full h-full object-cover"
         >
           <source
-            src="https://videos.pexels.com/video-files/2675516/2675516-sd_960_540_24fps.mp4"
+            src={competition.heroVideoUrl || "https://videos.pexels.com/video-files/2675516/2675516-sd_960_540_24fps.mp4"}
             type="video/mp4"
           />
         </video>
@@ -83,10 +82,10 @@ export function HeroSection({ competition }: Props) {
               size="lg"
               className="rounded-full px-6 h-12 text-base font-medium"
             >
-              <Link to={`/competitions/${competition.slug}`}>
+              <a href={`/competitions/${competition.slug}`}>
                 View competition
                 <ArrowUpRight className="ml-1 size-4" />
-              </Link>
+              </a>
             </Button>
             <Button
               asChild
@@ -94,9 +93,9 @@ export function HeroSection({ competition }: Props) {
               variant="outline"
               className="rounded-full px-6 h-12 text-base font-medium bg-white/5 backdrop-blur border-white/30 text-white hover:bg-white/15 hover:text-white"
             >
-              <Link to="/#register">
+              <a href="/#register">
                 Register for {formatINR(competition.entryFeeINR)}
-              </Link>
+              </a>
             </Button>
           </motion.div>
         </div>

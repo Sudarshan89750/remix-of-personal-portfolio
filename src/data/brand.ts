@@ -7,16 +7,16 @@ export const brand = {
   name: 'PhotoGigs',
   tagline: 'Compete. Create. Win.',
   shortDescription:
-    'India\u2019s first engagement-based photography competition platform.',
+    'India’s first engagement-based photography competition platform.',
   longDescription:
     'A platform for photographers to compete, find work, hire crew, sell or rent gear, and grow a real career behind the lens.',
   mission:
-    'We believe talent shouldn\u2019t wait for permission. PhotoGigs turns the camera roll into a livelihood \u2014 through transparent competitions, real jobs, and a marketplace built by photographers, for photographers.',
+    'We believe talent shouldn’t wait for permission. PhotoGigs turns the camera roll into a livelihood — through transparent competitions, real jobs, and a marketplace built by photographers, for photographers.',
   founded: 2025,
   email: 'hello@photogigs.in',
   whatsapp: '+91 00000 00000',
   social: {
-    instagram: 'https://instagram.com/photogigs',
+    instagram: import.meta.env.PUBLIC_INSTAGRAM_URL || 'https://instagram.com/photogigs',
   },
   hashtag: '#PhotoGigsChallenge',
 } as const;
@@ -25,7 +25,7 @@ export const platformPillars = [
   {
     title: 'Competitions',
     blurb:
-      'Seasonal challenges scored by real engagement \u2014 not opinion.',
+      'Seasonal challenges scored by real engagement — not opinion.',
     href: '/competitions',
     available: true,
   },

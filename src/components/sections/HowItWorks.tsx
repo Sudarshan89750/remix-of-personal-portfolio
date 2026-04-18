@@ -50,7 +50,7 @@ export function HowItWorks({ competition }: Props) {
                     {step.bullets.map((b) => (
                       <li
                         key={b}
-                        className="flex items-start gap-2 before:content-['\u2014'] before:text-muted-foreground"
+                        className="flex items-start gap-2 before:content-['—'] before:text-muted-foreground"
                       >
                         <span>{b}</span>
                       </li>
