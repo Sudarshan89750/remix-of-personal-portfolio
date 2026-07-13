@@ -11,6 +11,7 @@ import { CompetitionSection } from "@/components/sections/competition-section";
 import { ScoringSection } from "@/components/sections/scoring-section";
 import { HowItWorks } from "@/components/sections/how-it-works";
 import { WhyPhotoGigs } from "@/components/sections/why-photogigs";
+import { WinnersSection } from "@/components/sections/winners-section";
 import { RegistrationSection } from "@/components/sections/registration-section";
 import { FinalCTA } from "@/components/sections/final-cta";
 import { Button } from "@/components/ui/button";
@@ -110,6 +111,7 @@ export default async function HomePage() {
         <HowItWorks steps={competition.steps} />
         <ScoringSection competition={competition} />
         <WhyPhotoGigs />
+        <WinnersSection />
         <RegistrationSection competition={competition} />
         <FinalCTA competition={competition} />
       </main>

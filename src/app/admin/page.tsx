@@ -15,7 +15,7 @@ export default async function AdminDashboard() {
   const stats = [
     { label: "Competitions", value: compCount[0]?.count ?? 0, icon: Award, href: "/admin/competitions" },
     { label: "Winners", value: winnerCount[0]?.count ?? 0, icon: Trophy, href: "/admin/winners" },
-    { label: "Registrations", value: regCount[0]?.count ?? 0, icon: Users, href: "/admin/competitions" },
+    { label: "Registrations", value: regCount[0]?.count ?? 0, icon: Users, href: "/admin/registrations" },
   ]
 
   return (

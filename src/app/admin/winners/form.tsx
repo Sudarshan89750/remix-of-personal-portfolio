@@ -2,8 +2,15 @@
 
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
-import { ArrowLeft, Save, Upload } from "lucide-react"
+import { ArrowLeft, Save, Upload, Plus, X, Gift, Banknote } from "lucide-react"
 import Link from "next/link"
+
+interface PrizeItem {
+  label: string
+  type: "cash" | "gift"
+  amount?: number
+  imageUrl?: string
+}
 
 interface WinnerData {
   id: number
@@ -11,9 +18,9 @@ interface WinnerData {
   name: string
   instagramHandle: string
   imageUrl: string | null
-  prizeAmount: number | null
   rank: number
   title: string | null
+  prizes: PrizeItem[]
 }
 
 export function WinnerForm({ winner }: { winner?: WinnerData }) {
@@ -21,6 +28,7 @@ export function WinnerForm({ winner }: { winner?: WinnerData }) {
   const isEditing = !!winner
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [prizeUploading, setPrizeUploading] = useState<number | null>(null)
   const [competitions, setCompetitions] = useState<{ id: number; title: string; season: string }[]>([])
 
   const [form, setForm] = useState({
@@ -28,16 +36,17 @@ export function WinnerForm({ winner }: { winner?: WinnerData }) {
     name: winner?.name ?? "",
     instagramHandle: winner?.instagramHandle ?? "",
     imageUrl: winner?.imageUrl ?? "",
-    prizeAmount: winner?.prizeAmount ?? "",
     rank: winner?.rank ?? "",
     title: winner?.title ?? "",
   })
+
+  const [prizes, setPrizes] = useState<PrizeItem[]>(winner?.prizes ?? [])
 
   useEffect(() => {
     fetch("/api/admin/competitions").then((r) => r.json()).then(setCompetitions).catch(() => {})
   }, [])
 
-  function set<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
+  function setField<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
@@ -50,12 +59,43 @@ export function WinnerForm({ winner }: { winner?: WinnerData }) {
       fd.append("file", file)
       const res = await fetch("/api/admin/upload", { method: "POST", body: fd })
       const data = await res.json()
-      if (data.url) set("imageUrl", data.url)
+      if (data.url) setField("imageUrl", data.url)
     } catch {
       alert("Upload failed")
     } finally {
       setUploading(false)
     }
+  }
+
+  async function handlePrizeUpload(idx: number, e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setPrizeUploading(idx)
+    try {
+      const fd = new FormData()
+      fd.append("file", file)
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd })
+      const data = await res.json()
+      if (data.url) {
+        setPrizes((prev) => prev.map((p, i) => i === idx ? { ...p, imageUrl: data.url } : p))
+      }
+    } catch {
+      alert("Upload failed")
+    } finally {
+      setPrizeUploading(null)
+    }
+  }
+
+  function addPrize() {
+    setPrizes((prev) => [...prev, { label: "", type: "cash" }])
+  }
+
+  function updatePrize(idx: number, patch: Partial<PrizeItem>) {
+    setPrizes((prev) => prev.map((p, i) => i === idx ? { ...p, ...patch } : p))
+  }
+
+  function removePrize(idx: number) {
+    setPrizes((prev) => prev.filter((_, i) => i !== idx))
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -65,8 +105,8 @@ export function WinnerForm({ winner }: { winner?: WinnerData }) {
       const body = {
         ...form,
         competitionId: Number(form.competitionId),
-        prizeAmount: form.prizeAmount ? Number(form.prizeAmount) : null,
         rank: Number(form.rank),
+        prizes,
       }
 
       const url = isEditing ? `/api/admin/winners/${winner.id}` : "/api/admin/winners"
@@ -106,7 +146,7 @@ export function WinnerForm({ winner }: { winner?: WinnerData }) {
           <div className="grid grid-cols-2 gap-4">
             <div className={fieldClass}>
               <label className={labelClass}>Competition *</label>
-              <select className={inputClass} value={form.competitionId} onChange={(e) => set("competitionId", e.target.value)} required>
+              <select className={inputClass} value={form.competitionId} onChange={(e) => setField("competitionId", e.target.value)} required>
                 <option value="">Select competition</option>
                 {competitions.map((c) => (
                   <option key={c.id} value={c.id}>S{c.season} — {c.title}</option>
@@ -115,44 +155,104 @@ export function WinnerForm({ winner }: { winner?: WinnerData }) {
             </div>
             <div className={fieldClass}>
               <label className={labelClass}>Rank *</label>
-              <input className={inputClass} type="number" value={form.rank} onChange={(e) => set("rank", e.target.value)} placeholder="1" required min="1" />
+              <input className={inputClass} type="number" value={form.rank} onChange={(e) => setField("rank", e.target.value)} placeholder="1" required min="1" />
             </div>
             <div className={fieldClass}>
               <label className={labelClass}>Full Name *</label>
-              <input className={inputClass} value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="Aarav Sharma" required />
+              <input className={inputClass} value={form.name} onChange={(e) => setField("name", e.target.value)} placeholder="Aarav Sharma" required />
             </div>
             <div className={fieldClass}>
               <label className={labelClass}>Instagram Handle *</label>
-              <input className={inputClass} value={form.instagramHandle} onChange={(e) => set("instagramHandle", e.target.value)} placeholder="@aarav_shoots" required />
-            </div>
-            <div className={fieldClass}>
-              <label className={labelClass}>Prize Amount (optional)</label>
-              <input className={inputClass} type="number" value={form.prizeAmount} onChange={(e) => set("prizeAmount", e.target.value)} placeholder="25000" />
+              <input className={inputClass} value={form.instagramHandle} onChange={(e) => setField("instagramHandle", e.target.value)} placeholder="@aarav_shoots" required />
             </div>
             <div className={fieldClass}>
               <label className={labelClass}>Title (optional)</label>
-              <input className={inputClass} value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="e.g. Grand Prize Winner" />
+              <input className={inputClass} value={form.title} onChange={(e) => setField("title", e.target.value)} placeholder="e.g. Grand Prize Winner" />
             </div>
           </div>
         </div>
 
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
-          <h2 className="text-sm font-semibold text-zinc-300 border-b border-zinc-800 pb-3">Winner Image</h2>
+          <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+            <h2 className="text-sm font-semibold text-zinc-300">Prizes</h2>
+            <button type="button" onClick={addPrize} className="flex items-center gap-1.5 text-xs text-red-400 hover:text-red-300 transition-colors">
+              <Plus className="size-3.5" />
+              Add Prize
+            </button>
+          </div>
+
+          {prizes.length === 0 && (
+            <p className="text-sm text-zinc-600 py-4 text-center">No prizes added yet. Click &quot;Add Prize&quot; to add cash or gift items.</p>
+          )}
+
+          {prizes.map((prize, idx) => (
+            <div key={idx} className="bg-zinc-800/40 border border-zinc-700/60 rounded-lg p-4 space-y-3 relative">
+              <button type="button" onClick={() => removePrize(idx)} className="absolute top-3 right-3 p-1 rounded-md hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition-colors">
+                <X className="size-3.5" />
+              </button>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div className={fieldClass}>
+                  <label className={labelClass}>Type</label>
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => updatePrize(idx, { type: "cash", imageUrl: undefined })} className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs border transition-colors ${prize.type === "cash" ? "bg-red-500/10 border-red-500/30 text-red-400" : "bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-zinc-300"}`}>
+                      <Banknote className="size-3.5" />
+                      Cash
+                    </button>
+                    <button type="button" onClick={() => updatePrize(idx, { type: "gift", amount: undefined })} className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs border transition-colors ${prize.type === "gift" ? "bg-red-500/10 border-red-500/30 text-red-400" : "bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-zinc-300"}`}>
+                      <Gift className="size-3.5" />
+                      Gift
+                    </button>
+                  </div>
+                </div>
+
+                <div className={fieldClass}>
+                  <label className={labelClass}>Label *</label>
+                  <input className={inputClass} value={prize.label} onChange={(e) => updatePrize(idx, { label: e.target.value })} placeholder={prize.type === "cash" ? "₹50,000 Cash Prize" : "Sony Alpha Camera"} required />
+                </div>
+
+                {prize.type === "cash" && (
+                  <div className={fieldClass}>
+                    <label className={labelClass}>Amount (₹)</label>
+                    <input className={inputClass} type="number" value={prize.amount ?? ""} onChange={(e) => updatePrize(idx, { amount: e.target.value ? Number(e.target.value) : undefined })} placeholder="50000" />
+                  </div>
+                )}
+
+                {prize.type === "gift" && (
+                  <div className={fieldClass}>
+                    <label className={labelClass}>Gift Image</label>
+                    <div className="flex items-center gap-2">
+                      <input className={inputClass} value={prize.imageUrl ?? ""} onChange={(e) => updatePrize(idx, { imageUrl: e.target.value })} placeholder="/uploads/prize.jpg" />
+                      <label className="flex items-center gap-1.5 px-2.5 py-2 bg-zinc-800 rounded-lg text-xs text-zinc-400 hover:bg-zinc-700 cursor-pointer transition-colors shrink-0">
+                        <Upload className="size-3.5" />
+                        {prizeUploading === idx ? "..." : "Upload"}
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handlePrizeUpload(idx, e)} disabled={prizeUploading === idx} />
+                      </label>
+                    </div>
+                    {prize.imageUrl && (
+                      <img src={prize.imageUrl} alt="" className="mt-1.5 h-12 w-12 object-cover rounded-lg border border-zinc-700" />
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4">
+          <h2 className="text-sm font-semibold text-zinc-300 border-b border-zinc-800 pb-3">Winner Photo</h2>
           <div className={fieldClass}>
-            <label className={labelClass}>Image URL</label>
-            <input className={inputClass} value={form.imageUrl} onChange={(e) => set("imageUrl", e.target.value)} placeholder="https://... or /uploads/..." />
+            <label className={labelClass}>Photo URL</label>
+            <input className={inputClass} value={form.imageUrl} onChange={(e) => setField("imageUrl", e.target.value)} placeholder="https://... or /uploads/..." />
           </div>
           <div className="flex items-center gap-4">
             <label className="flex items-center gap-2 px-4 py-2 bg-zinc-800 rounded-lg text-sm text-zinc-300 hover:bg-zinc-700 cursor-pointer transition-colors">
               <Upload className="size-4" />
-              {uploading ? "Uploading..." : "Upload Image"}
+              {uploading ? "Uploading..." : "Upload Photo"}
               <input type="file" accept="image/*" className="hidden" onChange={handleUpload} disabled={uploading} />
             </label>
             {form.imageUrl && (
-              <div className="relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={form.imageUrl} alt="Preview" className="h-16 w-16 object-cover rounded-lg border border-zinc-700" />
-              </div>
             )}
           </div>
         </div>

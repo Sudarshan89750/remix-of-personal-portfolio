@@ -32,6 +32,7 @@ export const competitions = pgTable('competitions', {
   heroPosterUrl: text('hero_poster_url'),
   upiId: text('upi_id'),
   prizeDescription: text('prize_description'),
+  prizes: jsonb('prizes').default([]),
 });
 
 export const registrations = pgTable('registrations', {
@@ -54,5 +55,6 @@ export const winners = pgTable('winners', {
   prizeAmount: integer('prize_amount'),
   rank: integer('rank').notNull(),
   title: text('title'),
+  prizes: jsonb('prizes').default([]),
   createdAt: timestamp('created_at').defaultNow(),
 });

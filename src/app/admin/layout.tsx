@@ -1,11 +1,12 @@
 import Link from "next/link"
-import { Camera, LayoutDashboard, Trophy, Award, ArrowLeft, LogOut } from "lucide-react"
+import { Camera, LayoutDashboard, Trophy, Award, ArrowLeft, LogOut, Users } from "lucide-react"
 import { LogoutButton } from "@/components/layout/admin-logout"
 
 const navItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Competitions", href: "/admin/competitions", icon: Award },
   { label: "Winners", href: "/admin/winners", icon: Trophy },
+  { label: "Registrations", href: "/admin/registrations", icon: Users },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

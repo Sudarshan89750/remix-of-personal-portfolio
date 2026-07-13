@@ -2,7 +2,7 @@ import Link from "next/link"
 import { db } from "@/db"
 import { winners, competitions } from "@/db/schema"
 import { desc } from "drizzle-orm"
-import { Plus, Pencil, ExternalLink } from "lucide-react"
+import { Plus, Pencil, ExternalLink, Gift, Banknote } from "lucide-react"
 import { DeleteButton } from "./delete-button"
 
 export const revalidate = 0
@@ -49,8 +49,8 @@ export default async function WinnersList() {
                 <th className="p-3 font-medium">Name</th>
                 <th className="p-3 font-medium">Instagram</th>
                 <th className="p-3 font-medium">Competition</th>
-                <th className="p-3 font-medium">Prize</th>
-                <th className="p-3 font-medium">Image</th>
+                <th className="p-3 font-medium">Prizes</th>
+                <th className="p-3 font-medium">Photo</th>
                 <th className="p-3 font-medium w-24">Actions</th>
               </tr>
             </thead>
@@ -67,7 +67,20 @@ export default async function WinnersList() {
                     </a>
                   </td>
                   <td className="p-3 text-zinc-400 text-xs">{compMap.get(w.competitionId) || `ID: ${w.competitionId}`}</td>
-                  <td className="p-3 text-zinc-300">{w.prizeAmount ? `₹${w.prizeAmount.toLocaleString()}` : "—"}</td>
+                  <td className="p-3">
+                    {(w.prizes as { label: string; type: string; amount?: number; imageUrl?: string }[] | null)?.length ? (
+                      <div className="flex flex-wrap gap-1">
+                        {(w.prizes as { label: string; type: string; amount?: number; imageUrl?: string }[]).map((p, i) => (
+                          <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono bg-zinc-800 text-zinc-300 border border-zinc-700">
+                            {p.type === "cash" ? <Banknote className="size-3" /> : <Gift className="size-3" />}
+                            {p.label}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-zinc-600">—</span>
+                    )}
+                  </td>
                   <td className="p-3">
                     {w.imageUrl ? (
                       <a href={w.imageUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-zinc-500 hover:text-red-400">View</a>

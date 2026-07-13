@@ -14,5 +14,6 @@ export default async function EditWinner({ params }: { params: Promise<{ id: str
   const result = await db.select().from(winners).where(eq(winners.id, numericId)).limit(1)
   if (!result[0]) notFound()
 
-  return <WinnerForm winner={result[0]} />
+  const winner = { ...result[0], prizes: (result[0].prizes || []) as { label: string; type: "cash" | "gift"; amount?: number; imageUrl?: string }[] }
+  return <WinnerForm winner={winner as any} />
 }

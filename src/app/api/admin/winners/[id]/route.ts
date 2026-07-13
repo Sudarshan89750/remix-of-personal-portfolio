@@ -12,13 +12,13 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
   try {
     const body = await request.json()
-    const { competitionId, name, instagramHandle, imageUrl, prizeAmount, rank, title } = body
+    const { competitionId, name, instagramHandle, imageUrl, rank, title, prizes } = body
 
     const updated = await db.update(winners).set({
       competitionId, name, instagramHandle,
       imageUrl: imageUrl || null,
-      prizeAmount: prizeAmount || null,
       rank, title: title || null,
+      prizes: prizes || [],
     }).where(eq(winners.id, numericId)).returning()
 
     return NextResponse.json(updated[0])

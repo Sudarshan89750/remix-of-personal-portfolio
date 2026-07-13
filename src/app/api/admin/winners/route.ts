@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { db } from "@/db"
-import { winners } from "@/db/schema"
+import { winners, competitions } from "@/db/schema"
 import { desc } from "drizzle-orm"
 import { verifyAdminAuth } from "@/lib/admin-auth"
 
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
   if (!verifyAdminAuth(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   try {
     const body = await request.json()
-    const { competitionId, name, instagramHandle, imageUrl, prizeAmount, rank, title } = body
+    const { competitionId, name, instagramHandle, imageUrl, rank, title, prizes } = body
 
     if (!competitionId || !name || !instagramHandle || !rank) {
       return NextResponse.json({ error: "Missing required fields: competitionId, name, instagramHandle, rank" }, { status: 400 })
@@ -29,9 +29,9 @@ export async function POST(request: Request) {
       name,
       instagramHandle,
       imageUrl: imageUrl || null,
-      prizeAmount: prizeAmount || null,
       rank,
       title: title || null,
+      prizes: prizes || [],
     }).returning()
 
     return NextResponse.json(inserted[0], { status: 201 })
