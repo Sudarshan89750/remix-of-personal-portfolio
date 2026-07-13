@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowLeft, ShieldAlert } from "lucide-react";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { brand } from "@/data/brand";
 
