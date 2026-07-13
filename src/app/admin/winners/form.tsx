@@ -17,9 +17,9 @@ interface WinnerData {
   competitionId: number
   name: string
   instagramHandle: string
-  imageUrl: string | null
-  rank: number
-  title: string | null
+  photoUrl: string | null
+  position: string
+  entryTitle: string | null
   prizes: PrizeItem[]
 }
 
@@ -35,9 +35,9 @@ export function WinnerForm({ winner }: { winner?: WinnerData }) {
     competitionId: winner?.competitionId ?? "",
     name: winner?.name ?? "",
     instagramHandle: winner?.instagramHandle ?? "",
-    imageUrl: winner?.imageUrl ?? "",
-    rank: winner?.rank ?? "",
-    title: winner?.title ?? "",
+    photoUrl: winner?.photoUrl ?? "",
+    position: winner?.position ?? "",
+    entryTitle: winner?.entryTitle ?? "",
   })
 
   const [prizes, setPrizes] = useState<PrizeItem[]>(winner?.prizes ?? [])
@@ -59,7 +59,7 @@ export function WinnerForm({ winner }: { winner?: WinnerData }) {
       fd.append("file", file)
       const res = await fetch("/api/admin/upload", { method: "POST", body: fd })
       const data = await res.json()
-      if (data.url) setField("imageUrl", data.url)
+      if (data.url) setField("photoUrl", data.url)
     } catch {
       alert("Upload failed")
     } finally {
@@ -105,7 +105,6 @@ export function WinnerForm({ winner }: { winner?: WinnerData }) {
       const body = {
         ...form,
         competitionId: Number(form.competitionId),
-        rank: Number(form.rank),
         prizes,
       }
 
@@ -136,7 +135,7 @@ export function WinnerForm({ winner }: { winner?: WinnerData }) {
         </Link>
         <div>
           <h1 className="text-2xl font-bold">{isEditing ? "Edit Winner" : "Add Winner"}</h1>
-          <p className="text-sm text-zinc-500 mt-1">{isEditing ? `#${winner.rank} ${winner.name}` : "Record a competition winner"}</p>
+          <p className="text-sm text-zinc-500 mt-1">{isEditing ? `#${winner.position} ${winner.name}` : "Record a competition winner"}</p>
         </div>
       </div>
 
@@ -154,8 +153,8 @@ export function WinnerForm({ winner }: { winner?: WinnerData }) {
               </select>
             </div>
             <div className={fieldClass}>
-              <label className={labelClass}>Rank *</label>
-              <input className={inputClass} type="number" value={form.rank} onChange={(e) => setField("rank", e.target.value)} placeholder="1" required min="1" />
+              <label className={labelClass}>Position *</label>
+              <input className={inputClass} value={form.position} onChange={(e) => setField("position", e.target.value)} placeholder="1st, 2nd, Grand Prize..." required />
             </div>
             <div className={fieldClass}>
               <label className={labelClass}>Full Name *</label>
@@ -166,8 +165,8 @@ export function WinnerForm({ winner }: { winner?: WinnerData }) {
               <input className={inputClass} value={form.instagramHandle} onChange={(e) => setField("instagramHandle", e.target.value)} placeholder="@aarav_shoots" required />
             </div>
             <div className={fieldClass}>
-              <label className={labelClass}>Title (optional)</label>
-              <input className={inputClass} value={form.title} onChange={(e) => setField("title", e.target.value)} placeholder="e.g. Grand Prize Winner" />
+              <label className={labelClass}>Entry Title (optional)</label>
+              <input className={inputClass} value={form.entryTitle} onChange={(e) => setField("entryTitle", e.target.value)} placeholder="e.g. Grand Prize Winner" />
             </div>
           </div>
         </div>
@@ -243,7 +242,7 @@ export function WinnerForm({ winner }: { winner?: WinnerData }) {
           <h2 className="text-sm font-semibold text-zinc-300 border-b border-zinc-800 pb-3">Winner Photo</h2>
           <div className={fieldClass}>
             <label className={labelClass}>Photo URL</label>
-            <input className={inputClass} value={form.imageUrl} onChange={(e) => setField("imageUrl", e.target.value)} placeholder="https://... or /uploads/..." />
+            <input className={inputClass} value={form.photoUrl} onChange={(e) => setField("photoUrl", e.target.value)} placeholder="https://... or /uploads/..." />
           </div>
           <div className="flex items-center gap-4">
             <label className="flex items-center gap-2 px-4 py-2 bg-zinc-800 rounded-lg text-sm text-zinc-300 hover:bg-zinc-700 cursor-pointer transition-colors">
@@ -251,8 +250,8 @@ export function WinnerForm({ winner }: { winner?: WinnerData }) {
               {uploading ? "Uploading..." : "Upload Photo"}
               <input type="file" accept="image/*" className="hidden" onChange={handleUpload} disabled={uploading} />
             </label>
-            {form.imageUrl && (
-              <img src={form.imageUrl} alt="Preview" className="h-16 w-16 object-cover rounded-lg border border-zinc-700" />
+            {form.photoUrl && (
+              <img src={form.photoUrl} alt="Preview" className="h-16 w-16 object-cover rounded-lg border border-zinc-700" />
             )}
           </div>
         </div>

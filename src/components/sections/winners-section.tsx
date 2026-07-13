@@ -44,8 +44,8 @@ export async function WinnersSection() {
               <ScrollReveal key={w.id} delay={0.05 * idx}>
                 <div className="bg-surface border border-border rounded-2xl overflow-hidden hover:border-brand/20 transition-colors duration-300 group">
                   <div className="relative aspect-[4/3] bg-zinc-800 overflow-hidden">
-                    {w.imageUrl ? (
-                      <Image src={w.imageUrl} alt={w.name} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover group-hover:scale-102 transition-transform duration-500" />
+                    {w.photoUrl ? (
+                      <Image src={w.photoUrl} alt={w.name} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover group-hover:scale-102 transition-transform duration-500" />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center text-zinc-700">
                         <Trophy className="size-12" />
@@ -55,7 +55,7 @@ export async function WinnersSection() {
                     <div className="absolute bottom-3 left-4 right-4">
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono tracking-wider uppercase bg-brand/15 text-brand border border-brand/20">
                         <span className="size-1.5 rounded-full bg-brand" />
-                        #{w.rank}
+                        #{w.position}
                       </span>
                     </div>
                   </div>

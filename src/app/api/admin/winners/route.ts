@@ -18,19 +18,19 @@ export async function POST(request: Request) {
   if (!verifyAdminAuth(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   try {
     const body = await request.json()
-    const { competitionId, name, instagramHandle, imageUrl, rank, title, prizes } = body
+    const { competitionId, name, instagramHandle, photoUrl, position, entryTitle, prizes } = body
 
-    if (!competitionId || !name || !instagramHandle || !rank) {
-      return NextResponse.json({ error: "Missing required fields: competitionId, name, instagramHandle, rank" }, { status: 400 })
+    if (!competitionId || !name || !instagramHandle || !position) {
+      return NextResponse.json({ error: "Missing required fields: competitionId, name, instagramHandle, position" }, { status: 400 })
     }
 
     const inserted = await db.insert(winners).values({
       competitionId,
       name,
       instagramHandle,
-      imageUrl: imageUrl || null,
-      rank,
-      title: title || null,
+      photoUrl: photoUrl || null,
+      position,
+      entryTitle: entryTitle || null,
       prizes: prizes || [],
     }).returning()
 

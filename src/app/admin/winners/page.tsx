@@ -58,7 +58,7 @@ export default async function WinnersList() {
               {allWinners.map((w) => (
                 <tr key={w.id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors">
                   <td className="p-3">
-                    <span className="font-mono text-xs bg-zinc-800 px-2 py-0.5 rounded">#{w.rank}</span>
+                    <span className="font-mono text-xs bg-zinc-800 px-2 py-0.5 rounded">#{w.position}</span>
                   </td>
                   <td className="p-3 font-medium">{w.name}</td>
                   <td className="p-3">
@@ -82,8 +82,8 @@ export default async function WinnersList() {
                     )}
                   </td>
                   <td className="p-3">
-                    {w.imageUrl ? (
-                      <a href={w.imageUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-zinc-500 hover:text-red-400">View</a>
+                    {w.photoUrl ? (
+                      <a href={w.photoUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-zinc-500 hover:text-red-400">View</a>
                     ) : (
                       <span className="text-xs text-zinc-600">—</span>
                     )}

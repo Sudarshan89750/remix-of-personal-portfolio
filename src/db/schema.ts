@@ -32,6 +32,11 @@ export const competitions = pgTable('competitions', {
   heroPosterUrl: text('hero_poster_url'),
   upiId: text('upi_id'),
   prizeDescription: text('prize_description'),
+  winnerCount: integer('winner_count'),
+  winners: jsonb('winners'),
+  prizeDriveLink: text('prize_drive_link'),
+  winnersDriveLink: text('winners_drive_link'),
+  resultsDriveLink: text('results_drive_link'),
   prizes: jsonb('prizes').default([]),
 });
 
@@ -50,11 +55,11 @@ export const winners = pgTable('winners', {
   id: serial('id').primaryKey(),
   competitionId: integer('competition_id').notNull(),
   name: text('name').notNull(),
-  instagramHandle: text('instagram_handle').notNull(),
-  imageUrl: text('image_url'),
+  position: text('position').notNull(),
   prizeAmount: integer('prize_amount'),
-  rank: integer('rank').notNull(),
-  title: text('title'),
+  photoUrl: text('photo_url'),
+  instagramHandle: text('instagram_handle').notNull(),
+  entryTitle: text('entry_title'),
   prizes: jsonb('prizes').default([]),
   createdAt: timestamp('created_at').defaultNow(),
 });
