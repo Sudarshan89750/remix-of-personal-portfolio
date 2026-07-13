@@ -1,17 +1,35 @@
-interface Props {
+import React from "react";
+import { cn } from "@/lib/utils";
+
+export function Metric({
+  label,
+  value,
+  accent = false,
+  className,
+}: {
   label: string;
   value: string;
-}
-
-export function Metric({ label, value }: Props) {
+  accent?: boolean;
+  className?: string;
+}) {
   return (
-    <div className="border-t border-border pt-3">
-      <div className="font-mono text-[9px] uppercase tracking-[0.22em] text-muted-foreground">
+    <div
+      className={cn(
+        "border-t border-border pt-4 flex flex-col gap-1.5",
+        className
+      )}
+    >
+      <span className="text-xs font-mono tracking-wider uppercase text-muted-foreground">
         {label}
-      </div>
-      <div className="font-display text-2xl md:text-3xl mt-1 tabular-nums leading-none">
+      </span>
+      <span
+        className={cn(
+          "text-2xl md:text-3xl font-bold font-display tracking-tight",
+          accent ? "text-brand" : "text-foreground"
+        )}
+      >
         {value}
-      </div>
+      </span>
     </div>
   );
 }

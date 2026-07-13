@@ -1,0 +1,203 @@
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { notFound } from "next/navigation";
+import { eq } from "drizzle-orm";
+import { ArrowLeft, Clock, Award, Wallet, Hash, Layers } from "lucide-react";
+import { db } from "@/db";
+import { competitions } from "@/db/schema";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { ScoringSection } from "@/components/sections/scoring-section";
+import { HowItWorks } from "@/components/sections/how-it-works";
+import { RegistrationSection } from "@/components/sections/registration-section";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { formatINR, formatDeadline } from "@/data/competitions";
+
+export const revalidate = 0;
+
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps) {
+  const { slug } = await params;
+  try {
+    const results = await db.select().from(competitions).where(eq(competitions.slug, slug)).limit(1);
+    const comp = results[0];
+    if (!comp) return {};
+    return {
+      title: comp.title,
+      description: comp.subtitle,
+    };
+  } catch {
+    return {};
+  }
+}
+
+export default async function CompetitionDetailPage({ params }: PageProps) {
+  const { slug } = await params;
+  let competition = null;
+
+  try {
+    const results = await db.select().from(competitions).where(eq(competitions.slug, slug)).limit(1);
+    competition = results[0] || null;
+  } catch (error) {
+    console.error("Database connection error on competition detail page:", error);
+  }
+
+  if (!competition) {
+    notFound();
+  }
+
+  const imageSrc = competition.heroPosterUrl || "/hero-default.jpg";
+
+  // Sidebar parameters
+  const briefDetails = [
+    { label: "Prize pool", value: formatINR(competition.prizeINR), icon: Award, accent: true },
+    { label: "Entry fee", value: formatINR(competition.entryFeeINR), icon: Wallet },
+    { label: "Deadline", value: formatDeadline(competition.deadline), icon: Clock },
+    { label: "Hashtag", value: competition.hashtag, icon: Hash, mono: true },
+    { label: "Platforms", value: (competition.platforms as string[] || []).join(", "), icon: Layers },
+  ];
+
+  // Schema JSON-LD for SEO rich results
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": competition.title,
+    "description": competition.subtitle,
+    "startDate": competition.createdAt?.toISOString() || new Date().toISOString(),
+    "endDate": new Date(competition.deadline).toISOString(),
+    "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+    "eventStatus": competition.status === "open" ? "https://schema.org/EventScheduled" : "https://schema.org/EventMovedOnline",
+    "location": {
+      "@type": "VirtualLocation",
+      "url": "https://photogigs.in"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": competition.entryFeeINR,
+      "priceCurrency": "INR",
+      "url": `https://photogigs.in/competitions/${competition.slug}`
+    }
+  };
+
+  return (
+    <div className="flex flex-col min-h-screen bg-background overflow-x-hidden">
+      {/* Structured SEO Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <Header season={competition.season} />
+      
+      <main id="main-content" className="flex-1">
+        {/* ============ BREADCRUMB / HERO ============ */}
+        <section className="pt-24 border-b border-border" aria-label="Brief header details">
+          <div className="container mx-auto px-4 max-w-7xl">
+            {/* Back Button */}
+            <div className="mb-6">
+              <Button asChild variant="ghost" size="sm" className="group">
+                <Link href="/competitions">
+                  <ArrowLeft className="size-4 mr-2 group-hover:-translate-x-0.5 transition-transform" />
+                  All Competitions
+                </Link>
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-16 items-start">
+              {/* Left Panel: Brief Title */}
+              <div className="lg:col-span-8 flex flex-col gap-6">
+                <span className="text-xs font-mono tracking-wider uppercase text-brand">
+                  Season S0{competition.season} &bull; Competition Brief
+                </span>
+                
+                <h1 className="font-display text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight">
+                  {competition.title}. <br />
+                  <span className="text-brand italic font-semibold">{competition.subtitle}</span>
+                </h1>
+
+                <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+                  {competition.description}
+                </p>
+
+                {/* Subtitle Hashtag Badge */}
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="px-3 py-1 rounded-full text-xs font-mono tracking-wider uppercase bg-surface-alt text-foreground border border-border">
+                    {competition.hashtag}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    Mobile Photography Only
+                  </span>
+                </div>
+
+                <div className="mt-4">
+                  <Button asChild variant="brand" size="lg" className="shadow-lg shadow-brand/10">
+                    <Link href="#register">
+                      Register &bull; {formatINR(competition.entryFeeINR)}
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+
+              {/* Right Panel: Live Brief Summary */}
+              <div className="lg:col-span-4 w-full">
+                <div className="bg-surface border border-border rounded-3xl p-6 shadow-xl flex flex-col gap-5">
+                  <h2 className="font-display font-bold text-lg tracking-tight border-b border-border/60 pb-3">
+                    Live Brief Info
+                  </h2>
+                  <dl className="flex flex-col gap-4" aria-label="Competition detail parameters">
+                    {briefDetails.map((detail) => {
+                      const Icon = detail.icon;
+                      return (
+                        <div key={detail.label} className="flex items-center justify-between border-b border-border/40 pb-3 last:border-0 last:pb-0">
+                          <dt className="text-xs text-muted-foreground flex items-center gap-2">
+                            <Icon className="size-4 text-muted-foreground/60" aria-hidden="true" />
+                            {detail.label}
+                          </dt>
+                          <dd className={cn(
+                            "text-sm font-bold text-right",
+                            detail.accent ? "text-brand" : "text-foreground",
+                            detail.mono && "font-mono text-xs"
+                          )}>
+                            {detail.value}
+                          </dd>
+                        </div>
+                      );
+                    })}
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Full Width Hero Image */}
+          <div className="relative w-full h-64 sm:h-96 md:h-[480px]">
+            <Image
+              src={imageSrc}
+              alt={`Full-width hero showcase for ${competition.title}`}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+            {/* Subtle Gradient Cover Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+          </div>
+        </section>
+
+        {/* ============ BRIEF SECTIONS ============ */}
+        <HowItWorks steps={competition.steps} />
+        <ScoringSection competition={competition} />
+        <RegistrationSection competition={competition} />
+      </main>
+
+      <Footer season={competition.season} />
+    </div>
+  );
+}
+
+

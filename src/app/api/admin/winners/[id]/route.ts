@@ -1,0 +1,39 @@
+import { NextResponse } from "next/server"
+import { db } from "@/db"
+import { winners } from "@/db/schema"
+import { eq } from "drizzle-orm"
+
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const numericId = Number(id)
+  if (isNaN(numericId)) return NextResponse.json({ error: "Invalid ID" }, { status: 400 })
+
+  try {
+    const body = await request.json()
+    const { competitionId, name, instagramHandle, imageUrl, prizeAmount, rank, title } = body
+
+    const updated = await db.update(winners).set({
+      competitionId, name, instagramHandle,
+      imageUrl: imageUrl || null,
+      prizeAmount: prizeAmount || null,
+      rank, title: title || null,
+    }).where(eq(winners.id, numericId)).returning()
+
+    return NextResponse.json(updated[0])
+  } catch {
+    return NextResponse.json({ error: "Failed to update" }, { status: 500 })
+  }
+}
+
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const numericId = Number(id)
+  if (isNaN(numericId)) return NextResponse.json({ error: "Invalid ID" }, { status: 400 })
+
+  try {
+    await db.delete(winners).where(eq(winners.id, numericId))
+    return NextResponse.json({ success: true })
+  } catch {
+    return NextResponse.json({ error: "Failed to delete" }, { status: 500 })
+  }
+}

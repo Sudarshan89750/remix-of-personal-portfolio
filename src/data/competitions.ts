@@ -4,7 +4,7 @@ export type CompetitionStatus = 'upcoming' | 'open' | 'judging' | 'closed';
 
 export type ScoringWeight = {
   label: string;
-  weight: number; // percentage 0\u2013100
+  weight: number; // percentage 0–100
   note?: string;
 };
 
@@ -31,4 +31,3 @@ export const formatDeadline = (date: string | Date) => {
     year: 'numeric',
   });
 };
-

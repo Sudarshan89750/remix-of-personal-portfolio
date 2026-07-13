@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+:root {
+  --background: #F0EDE8;
+  --foreground: #1C1916;
+  --surface: #F7F4EF;
+  --surface-alt: #E6E0D6;
+  --border: #D6CEC2;
+  --primary: #C2321A;
+  --primary-foreground: #F7F4EF;
+  --muted-foreground: #6B6055;
+  --success: #5E7D5E;
+  --success-foreground: #F7F4EF;
+  --brand: #C2321A;
+  --brand-foreground: #F7F4EF;
+  --ring: rgba(194, 50, 26, 0.25);
+}
+
+.dark {
+  --background: #121110;
+  --foreground: #EBE5DE;
+  --surface: #1A1816;
+  --surface-alt: #262320;
+  --border: #383430;
+  --primary: #E0452A;
+  --primary-foreground: #121110;
+  --muted-foreground: #958D82;
+  --success: #7AA37A;
+  --success-foreground: #121110;
+  --brand: #E0452A;
+  --brand-foreground: #121110;
+  --ring: rgba(224, 69, 42, 0.25);
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+
+  --font-sans: "DM Sans", var(--font-sans);
+  --font-display: "DM Sans", var(--font-sans);
+  --font-mono: "JetBrains Mono", var(--font-mono);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .grain::before { opacity: 0.025; }
+  .hover\:red-lift:hover { color: var(--brand); transition: color 0.2s ease; }
+  .hover-only\:scale-110:hover { transform: scale(1.1); }
+  .hover-only\:translate-x-1:hover { transform: translateX(0.25rem); }
+  .hover-only\:-translate-x-0\:5:hover { transform: translateX(-0.125rem); }
+  .hover-only\:translate-x-0\:5:hover { transform: translateX(0.125rem); }
+  .hover-only\:-translate-y-0\:5:hover { transform: translateY(-0.125rem); }
+  .hover-only\:scale-102:hover { transform: scale(1.02); }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .grain::before { opacity: 0.012; }
+  .hover-only\:scale-110,
+  .hover-only\:translate-x-1,
+  .hover-only\:-translate-x-0\:5,
+  .hover-only\:translate-x-0\:5,
+  .hover-only\:-translate-y-0\:5,
+  .hover-only\:scale-102,
+  .hover\:red-lift { transition: none !important; }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+.animate-breathe { animation: breathe 2s ease-in-out infinite; }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--surface-alt) 25%, var(--surface) 50%, var(--surface-alt) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 0.75rem;
+}
+
+*:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+* { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--brand); }
+
+.grain { position: relative; }
+.grain::before {
+  content: ""; position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee { display: flex; width: max-content; animation: marquee 30s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .animate-marquee { animation-play-state: paused; } }

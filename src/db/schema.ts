@@ -1,5 +1,4 @@
 import { pgTable, serial, text, integer, timestamp, boolean, jsonb, uuid, varchar } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
 
 export const users = pgTable('users', {
   id: uuid('id').defaultRandom().primaryKey().notNull(),
@@ -7,7 +6,7 @@ export const users = pgTable('users', {
   firstName: varchar('first_name', { length: 100 }).notNull(),
   lastName: varchar('last_name', { length: 100 }).notNull(),
   phone: varchar('phone', { length: 20 }),
-  fullName: text('full_name'), // Legacy or helper field
+  fullName: text('full_name'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
@@ -37,11 +36,23 @@ export const competitions = pgTable('competitions', {
 
 export const registrations = pgTable('registrations', {
   id: serial('id').primaryKey(),
-  userId: uuid('user_id'), // Changed to uuid to match users.id
+  userId: uuid('user_id'),
   competitionId: integer('competition_id'),
   paymentStatus: text('payment_status').default('pending'),
   instagramHandle: text('instagram_handle'),
   submissionLink: text('submission_link'),
   transactionId: text('transaction_id'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const winners = pgTable('winners', {
+  id: serial('id').primaryKey(),
+  competitionId: integer('competition_id').notNull(),
+  name: text('name').notNull(),
+  instagramHandle: text('instagram_handle').notNull(),
+  imageUrl: text('image_url'),
+  prizeAmount: integer('prize_amount'),
+  rank: integer('rank').notNull(),
+  title: text('title'),
   createdAt: timestamp('created_at').defaultNow(),
 });
