@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { formatINR, formatDeadline, type Competition, type CompetitionStatus } from "@/data/competitions";
+import { formatINR, formatDeadline, formatPrizes, type Competition, type CompetitionStatus } from "@/data/competitions";
 import { cn } from "@/lib/utils";
 
 function StatusDot({ status }: { status: CompetitionStatus }) {
@@ -64,7 +64,7 @@ export function CompetitionRow({ competition, index }: { competition: Competitio
             Prize Pool
           </span>
           <span className="font-display font-bold text-foreground">
-            {formatINR(competition.prizeINR)}
+            {formatPrizes(competition)}
           </span>
         </div>
 

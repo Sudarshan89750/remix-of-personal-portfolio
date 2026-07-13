@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { formatINR, formatDeadline, type Competition } from "@/data/competitions";
+import { formatINR, formatDeadline, formatPrizes, type Competition } from "@/data/competitions";
 import { Button } from "../ui/button";
 import { ScrollReveal } from "../ui/scroll-reveal";
 
@@ -11,7 +11,7 @@ export function CompetitionSection({ competition }: { competition: Competition }
   const stats = [
     { label: "Theme", value: competition.subtitle, accent: false },
     { label: "Deadline", value: formatDeadline(competition.deadline), accent: false },
-    { label: "Prize pool", value: formatINR(competition.prizeINR), accent: true },
+    { label: "Prize pool", value: formatPrizes(competition), accent: true },
     { label: "Entry fee", value: formatINR(competition.entryFeeINR), accent: false },
   ];
 

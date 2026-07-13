@@ -6,7 +6,7 @@ import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "../ui/button";
-import { formatINR, formatDeadline, type Competition } from "@/data/competitions";
+import { formatINR, formatDeadline, formatPrizes, type Competition } from "@/data/competitions";
 
 export function HeroSection({ competition }: { competition: Competition }) {
   const shouldReduceMotion = useReducedMotion();
@@ -66,7 +66,7 @@ export function HeroSection({ competition }: { competition: Competition }) {
               variants={itemVariants} 
               className="text-[15px] sm:text-lg text-muted-foreground max-w-xl leading-relaxed"
             >
-              India&apos;s first engagement-based photography competition. No judging panels. No backroom decisions. Post a video, let the internet vote with its attention, and take home <span className="font-semibold text-foreground">{formatINR(competition.prizeINR)}</span>.
+              India&apos;s first engagement-based photography competition. No judging panels. No backroom decisions. Post a video, let the internet vote with its attention, and take home <span className="font-semibold text-foreground">{formatPrizes(competition)}</span>.
             </motion.p>
 
             <motion.div 
@@ -130,7 +130,7 @@ export function HeroSection({ competition }: { competition: Competition }) {
                   Prize
                 </span>
                 <span className="text-lg md:text-xl font-bold font-display tracking-tight text-brand">
-                  {formatINR(competition.prizeINR)}
+                  {formatPrizes(competition)}
                 </span>
               </div>
             </div>

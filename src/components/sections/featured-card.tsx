@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Calendar, Landmark, CreditCard, Tag } from "lucide-react";
-import { formatINR, formatDeadline, type Competition, type CompetitionStatus } from "@/data/competitions";
+import { formatINR, formatDeadline, formatPrizes, type Competition, type CompetitionStatus } from "@/data/competitions";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 
@@ -35,7 +35,7 @@ export function FeaturedCompetitionCard({ competition }: { competition: Competit
   const imageSrc = competition.heroPosterUrl || "/hero-default.jpg";
 
   const details = [
-    { label: "Prize Pool", value: formatINR(competition.prizeINR), icon: Landmark, accent: true },
+    { label: "Prize Pool", value: formatPrizes(competition), icon: Landmark, accent: true },
     { label: "Entry Fee", value: formatINR(competition.entryFeeINR), icon: CreditCard, accent: false },
     { label: "Deadline", value: formatDeadline(competition.deadline), icon: Calendar, accent: false },
     { label: "Hashtag", value: competition.hashtag, icon: Tag, accent: false, mono: true },

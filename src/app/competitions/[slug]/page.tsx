@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { eq } from "drizzle-orm";
-import { ArrowLeft, Clock, Award, Wallet, Hash, Layers } from "lucide-react";
+import { ArrowLeft, Clock, Award, Wallet, Hash, Layers, Gift, Banknote } from "lucide-react";
 import { db } from "@/db";
 import { competitions } from "@/db/schema";
 import { Header } from "@/components/layout/Header";
@@ -13,7 +13,7 @@ import { HowItWorks } from "@/components/sections/how-it-works";
 import { RegistrationSection } from "@/components/sections/registration-section";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { formatINR, formatDeadline } from "@/data/competitions";
+import { formatINR, formatDeadline, formatPrizes, type PrizeItem } from "@/data/competitions";
 
 export const revalidate = 0;
 
@@ -53,9 +53,11 @@ export default async function CompetitionDetailPage({ params }: PageProps) {
 
   const imageSrc = competition.heroPosterUrl || "/hero-default.jpg";
 
+  const prizeItems = (competition.prizes as PrizeItem[] | null) || []
+
   // Sidebar parameters
   const briefDetails = [
-    { label: "Prize pool", value: formatINR(competition.prizeINR), icon: Award, accent: true },
+    { label: "Prize pool", value: formatPrizes(competition), icon: Award, accent: true },
     { label: "Entry fee", value: formatINR(competition.entryFeeINR), icon: Wallet },
     { label: "Deadline", value: formatDeadline(competition.deadline), icon: Clock },
     { label: "Hashtag", value: competition.hashtag, icon: Hash, mono: true },
@@ -188,6 +190,47 @@ export default async function CompetitionDetailPage({ params }: PageProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
           </div>
         </section>
+
+        {/* ============ PRIZE SHOWCASE ============ */}
+        {prizeItems.length > 0 && (
+          <section className="border-b border-border py-16 md:py-20" aria-label="Prize breakdown">
+            <div className="container mx-auto px-4 max-w-7xl">
+              <div className="flex flex-col gap-3 mb-10 max-w-2xl">
+                <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-brand/70">Prizes</span>
+                <h2 className="text-[clamp(1.5rem,3.5vw,2.5rem)] font-extrabold font-display leading-tight tracking-tight">
+                  What&apos;s <span className="text-brand italic font-semibold">on the line.</span>
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {prizeItems.map((prize, idx) => (
+                  <div key={idx} className="bg-surface border border-border rounded-2xl p-5 flex flex-col gap-4 hover:border-brand/20 transition-colors group">
+                    {prize.type === "gift" && prize.imageUrl ? (
+                      <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-zinc-800">
+                        <Image src={prize.imageUrl} alt={prize.label} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover group-hover:scale-102 transition-transform duration-500" />
+                      </div>
+                    ) : (
+                      <div className="aspect-[4/3] rounded-xl bg-brand/5 border border-border/60 flex items-center justify-center">
+                        <Banknote className="size-10 text-brand/40" />
+                      </div>
+                    )}
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex flex-col gap-1 min-w-0">
+                        <span className="font-display font-bold text-sm text-foreground truncate">{prize.label}</span>
+                        {prize.type === "cash" && prize.amount && (
+                          <span className="text-xs text-muted-foreground">{formatINR(prize.amount)}</span>
+                        )}
+                      </div>
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider shrink-0 bg-zinc-800 text-zinc-400 border border-border/60">
+                        {prize.type === "cash" ? <Banknote className="size-3" /> : <Gift className="size-3" />}
+                        {prize.type}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* ============ BRIEF SECTIONS ============ */}
         <HowItWorks steps={competition.steps} />

@@ -31,7 +31,7 @@ import {
   DialogTitle, 
   DialogTrigger 
 } from "../ui/dialog";
-import { formatINR, type Competition } from "@/data/competitions";
+import { formatINR, formatPrizes, type Competition } from "@/data/competitions";
 import { brand } from "@/data/brand";
 
 const formSchema = z.object({
@@ -136,7 +136,7 @@ export function RegistrationSection({ competition }: { competition: Competition 
             
             <ScrollReveal delay={0.15}>
               <p className="text-base text-muted-foreground leading-relaxed">
-                Pay the entry fee of {formatINR(competition.entryFeeINR)}, complete the registration form, post your Reel, and compete for the cash prize pool of {competition.prizeDescription || formatINR(competition.prizeINR)}. The process takes less than five minutes.
+                Pay the entry fee of {formatINR(competition.entryFeeINR)}, complete the registration form, post your Reel, and compete for the prize pool of {competition.prizeDescription || formatPrizes(competition)}. The process takes less than five minutes.
               </p>
             </ScrollReveal>
 
