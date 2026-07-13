@@ -2,8 +2,10 @@ import { NextResponse } from "next/server"
 import { db } from "@/db"
 import { competitions } from "@/db/schema"
 import { eq } from "drizzle-orm"
+import { verifyAdminAuth } from "@/lib/admin-auth"
 
-export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!verifyAdminAuth(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   const { id } = await params
   const numericId = Number(id)
   if (isNaN(numericId)) return NextResponse.json({ error: "Invalid ID" }, { status: 400 })
@@ -13,6 +15,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 }
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!verifyAdminAuth(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   const { id } = await params
   const numericId = Number(id)
   if (isNaN(numericId)) return NextResponse.json({ error: "Invalid ID" }, { status: 400 })
@@ -39,7 +42,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   }
 }
 
-export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!verifyAdminAuth(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   const { id } = await params
   const numericId = Number(id)
   if (isNaN(numericId)) return NextResponse.json({ error: "Invalid ID" }, { status: 400 })

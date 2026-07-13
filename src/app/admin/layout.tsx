@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { Camera, LayoutDashboard, Trophy, Award, ArrowLeft } from "lucide-react"
+import { Camera, LayoutDashboard, Trophy, Award, ArrowLeft, LogOut } from "lucide-react"
+import { LogoutButton } from "@/components/layout/admin-logout"
 
 const navItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -32,11 +33,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             )
           })}
         </nav>
-        <div className="p-3 border-t border-zinc-800">
+        <div className="p-3 border-t border-zinc-800 space-y-2">
           <Link href="/" className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
             <ArrowLeft className="size-3" />
             Back to site
           </Link>
+          <div className="flex items-center gap-2 px-3 py-2 text-xs">
+            <LogOut className="size-3 text-zinc-500" />
+            <LogoutButton />
+          </div>
         </div>
       </aside>
       <main className="flex-1 overflow-auto">

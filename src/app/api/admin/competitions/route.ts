@@ -2,8 +2,10 @@ import { NextResponse } from "next/server"
 import { db } from "@/db"
 import { competitions } from "@/db/schema"
 import { desc } from "drizzle-orm"
+import { verifyAdminAuth } from "@/lib/admin-auth"
 
-export async function GET() {
+export async function GET(request: Request) {
+  if (!verifyAdminAuth(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   try {
     const all = await db.select().from(competitions).orderBy(desc(competitions.id))
     return NextResponse.json(all)
@@ -13,6 +15,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (!verifyAdminAuth(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   try {
     const body = await request.json()
     const { title, subtitle, slug, season, description, status, prizeInr, entryFeeInr, deadline, hashtag, featured, heroPosterUrl, upiId, prizeDescription, platforms, scoring, steps } = body
