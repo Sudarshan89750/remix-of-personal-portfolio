@@ -1,15 +1,19 @@
 "use client";
 
 import React from "react";
-import { Eye, Heart, Share2, MessageCircle, type LucideIcon } from "lucide-react";
+import { Eye, Heart, Share2, MessageCircle, BarChart3, type LucideIcon } from "lucide-react";
 import { type Competition } from "@/data/competitions";
 import { ScrollReveal } from "../ui/scroll-reveal";
 
 const iconMap: Record<string, LucideIcon> = {
   views: Eye,
   likes: Heart,
+  like: Heart,
   shares: Share2,
+  share: Share2,
   comments: MessageCircle,
+  comment: MessageCircle,
+  valuation: BarChart3,
 };
 
 export function ScoringSection({ competition }: { competition: Competition }) {
