@@ -5,19 +5,27 @@ import { Eye, Heart, Share2, MessageCircle, BarChart3, type LucideIcon } from "l
 import { type Competition } from "@/data/competitions";
 import { ScrollReveal } from "../ui/scroll-reveal";
 
-const iconMap: Record<string, LucideIcon> = {
-  views: Eye,
-  likes: Heart,
-  like: Heart,
-  shares: Share2,
-  share: Share2,
-  comments: MessageCircle,
-  comment: MessageCircle,
-  valuation: BarChart3,
-};
+const iconRules: { key: string; icon: LucideIcon }[] = [
+  { key: "views", icon: Eye },
+  { key: "likes", icon: Heart },
+  { key: "like", icon: Heart },
+  { key: "shares", icon: Share2 },
+  { key: "share", icon: Share2 },
+  { key: "comments", icon: MessageCircle },
+  { key: "comment", icon: MessageCircle },
+  { key: "valuation", icon: BarChart3 },
+];
+
+function lookupIcon(name: string): LucideIcon | null {
+  const lower = name.toLowerCase();
+  for (const rule of iconRules) {
+    if (lower === rule.key || lower.startsWith(rule.key)) return rule.icon;
+  }
+  return null;
+}
 
 export function ScoringSection({ competition }: { competition: Competition }) {
-  const scoringCriteria = (competition.scoring as { name: string; weight: number; description: string }[]) || [];
+  const scoringCriteria = (competition.scoring as { name?: string; label?: string; weight: number; description?: string }[]) || [];
 
   return (
     <section 
@@ -77,16 +85,17 @@ export function ScoringSection({ competition }: { competition: Competition }) {
                 <div className="flex flex-col gap-5 md:gap-6">
                   {scoringCriteria.map((criterion, idx) => {
                     const weight = criterion.weight;
-                    const IconComponent = iconMap[criterion.name?.toLowerCase()] || null;
+                    const criterionName = criterion.name || criterion.label || "";
+                    const IconComponent = lookupIcon(criterionName);
                     return (
-                      <div key={criterion.name || idx} className="flex flex-col gap-1.5 md:gap-2">
+                      <div key={criterionName || idx} className="flex flex-col gap-1.5 md:gap-2">
                         <div className="flex items-baseline justify-between gap-4">
                           <div className="flex items-center gap-2">
                             {IconComponent && (
                               <IconComponent className="size-3.5 md:size-4 text-brand/60 shrink-0" aria-hidden="true" />
                             )}
                             <span className="text-[13px] md:text-sm font-bold text-foreground">
-                              {criterion.name}
+                              {criterionName}
                             </span>
                           </div>
                           <span className="text-xs md:text-sm font-mono font-bold text-brand">
@@ -100,7 +109,7 @@ export function ScoringSection({ competition }: { competition: Competition }) {
                           aria-valuenow={weight}
                           aria-valuemin={0}
                           aria-valuemax={100}
-                          aria-label={`${criterion.name} weightage: ${weight}%`}
+                          aria-label={`${criterionName} weightage: ${weight}%`}
                         >
                           <div 
                             className="h-full bg-brand/80 rounded-full transition-all duration-500 ease-out" 
