@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
+
 import { notFound } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { ArrowLeft, Clock, Award, Wallet, Hash, Layers, Gift, Banknote } from "lucide-react";
@@ -178,15 +178,11 @@ export default async function CompetitionDetailPage({ params }: PageProps) {
           
           {/* Full Width Hero Image */}
           <div className="relative w-full h-64 sm:h-96 md:h-[480px]">
-            <Image
+            <img
               src={imageSrc}
               alt={`Full-width hero showcase for ${competition.title}`}
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
+              className="absolute inset-0 size-full object-cover"
             />
-            {/* Subtle Gradient Cover Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
           </div>
         </section>
@@ -206,7 +202,7 @@ export default async function CompetitionDetailPage({ params }: PageProps) {
                   <div key={idx} className="bg-surface border border-border rounded-2xl p-5 flex flex-col gap-4 hover:border-brand/20 transition-colors group">
                     {prize.type === "gift" && prize.imageUrl ? (
                       <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-zinc-800">
-                        <Image src={prize.imageUrl} alt={prize.label} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover group-hover:scale-102 transition-transform duration-500" />
+                        <img src={prize.imageUrl} alt={prize.label} className="absolute inset-0 size-full object-cover group-hover:scale-102 transition-transform duration-500" />
                       </div>
                     ) : (
                       <div className="aspect-[4/3] rounded-xl bg-brand/5 border border-border/60 flex items-center justify-center">
@@ -216,8 +212,8 @@ export default async function CompetitionDetailPage({ params }: PageProps) {
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex flex-col gap-1 min-w-0">
                         <span className="font-display font-bold text-sm text-foreground truncate">{prize.label}</span>
-                        {prize.type === "cash" && prize.amount && (
-                          <span className="text-xs text-muted-foreground">{formatINR(prize.amount)}</span>
+                        {prize.amount && (
+                          <span className="text-xs text-muted-foreground">{prize.type === "cash" ? "" : "Worth "}{formatINR(prize.amount)}</span>
                         )}
                       </div>
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider shrink-0 bg-zinc-800 text-zinc-400 border border-border/60">

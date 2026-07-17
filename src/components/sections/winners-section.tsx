@@ -7,6 +7,7 @@ import { desc, eq } from "drizzle-orm"
 import { ScrollReveal } from "../ui/scroll-reveal"
 import { InstagramIcon } from "@/components/ui/icons"
 import { Gift, Banknote, Trophy } from "lucide-react"
+import type { PrizeItem } from "@/data/competitions"
 
 export const revalidate = 0
 
@@ -38,7 +39,7 @@ export async function WinnersSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {allWinners.map((w, idx) => {
             const comp = compMap.get(w.competitionId)
-            const prizeList = (w.prizes as { label: string; type: string; amount?: number; imageUrl?: string }[] | null) || []
+            const prizeList = (w.prizes as PrizeItem[] | null) || []
 
             return (
               <ScrollReveal key={w.id} delay={0.05 * idx}>

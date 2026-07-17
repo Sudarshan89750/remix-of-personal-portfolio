@@ -18,7 +18,7 @@ export async function POST(request: Request) {
   if (!verifyAdminAuth(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   try {
     const body = await request.json()
-    const { title, subtitle, slug, season, description, status, prizeInr, entryFeeInr, deadline, hashtag, featured, heroPosterUrl, upiId, prizeDescription, platforms, scoring, steps } = body
+    const { title, subtitle, slug, season, description, status, prizeInr, entryFeeInr, deadline, hashtag, featured, heroPosterUrl, upiId, prizeDescription, platforms, scoring, steps, prizes } = body
 
     if (!title || !slug || !season || !description || !status || !prizeInr || !entryFeeInr || !deadline || !hashtag) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
@@ -34,6 +34,7 @@ export async function POST(request: Request) {
       platforms: JSON.stringify(platforms),
       scoring: JSON.stringify(scoring),
       steps: JSON.stringify(steps),
+      prizes: prizes ? JSON.stringify(prizes) : [],
     }).returning()
 
     return NextResponse.json(inserted[0], { status: 201 })

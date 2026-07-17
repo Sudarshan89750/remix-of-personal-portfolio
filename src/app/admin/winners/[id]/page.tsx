@@ -16,9 +16,6 @@ export default async function EditWinner({ params }: { params: Promise<{ id: str
 
   const winner = {
     ...result[0],
-    position: result[0].position,
-    photoUrl: result[0].photoUrl,
-    entryTitle: result[0].entryTitle,
     prizes: (result[0].prizes || []) as { label: string; type: "cash" | "gift"; amount?: number; imageUrl?: string }[],
   }
   return <WinnerForm winner={winner as any} />

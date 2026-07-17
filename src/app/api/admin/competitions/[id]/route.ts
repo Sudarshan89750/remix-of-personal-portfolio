@@ -22,7 +22,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
   try {
     const body = await request.json()
-    const { title, subtitle, slug, season, description, status, prizeInr, entryFeeInr, deadline, hashtag, featured, heroPosterUrl, upiId, prizeDescription, platforms, scoring, steps } = body
+    const { title, subtitle, slug, season, description, status, prizeInr, entryFeeInr, deadline, hashtag, featured, heroPosterUrl, upiId, prizeDescription, platforms, scoring, steps, prizes } = body
 
     const updated = await db.update(competitions).set({
       title, subtitle, slug, season, description, status,
@@ -34,6 +34,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       platforms: JSON.stringify(platforms),
       scoring: JSON.stringify(scoring),
       steps: JSON.stringify(steps),
+      prizes: prizes ? JSON.stringify(prizes) : [],
     }).where(eq(competitions.id, numericId)).returning()
 
     return NextResponse.json(updated[0])

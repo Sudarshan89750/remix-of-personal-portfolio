@@ -4,6 +4,7 @@ import { winners, competitions } from "@/db/schema"
 import { desc } from "drizzle-orm"
 import { Plus, Pencil, ExternalLink, Gift, Banknote } from "lucide-react"
 import { DeleteButton } from "./delete-button"
+import type { PrizeItem } from "@/data/competitions"
 
 export const revalidate = 0
 
@@ -55,7 +56,9 @@ export default async function WinnersList() {
               </tr>
             </thead>
             <tbody>
-              {allWinners.map((w) => (
+              {allWinners.map((w) => {
+                const prizeList = (w.prizes as PrizeItem[] | null)
+                return (
                 <tr key={w.id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors">
                   <td className="p-3">
                     <span className="font-mono text-xs bg-zinc-800 px-2 py-0.5 rounded">#{w.position}</span>
@@ -68,9 +71,9 @@ export default async function WinnersList() {
                   </td>
                   <td className="p-3 text-zinc-400 text-xs">{compMap.get(w.competitionId) || `ID: ${w.competitionId}`}</td>
                   <td className="p-3">
-                    {(w.prizes as { label: string; type: string; amount?: number; imageUrl?: string }[] | null)?.length ? (
+                    {prizeList?.length ? (
                       <div className="flex flex-wrap gap-1">
-                        {(w.prizes as { label: string; type: string; amount?: number; imageUrl?: string }[]).map((p, i) => (
+                        {prizeList.map((p, i) => (
                           <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono bg-zinc-800 text-zinc-300 border border-zinc-700">
                             {p.type === "cash" ? <Banknote className="size-3" /> : <Gift className="size-3" />}
                             {p.label}
@@ -97,7 +100,8 @@ export default async function WinnersList() {
                     </div>
                   </td>
                 </tr>
-              ))}
+                )
+              })}
             </tbody>
           </table>
         </div>
