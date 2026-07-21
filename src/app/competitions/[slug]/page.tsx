@@ -44,7 +44,7 @@ export default async function CompetitionDetailPage({ params }: PageProps) {
     const results = await db.select().from(competitions).where(eq(competitions.slug, slug)).limit(1);
     competition = results[0] || null;
   } catch (error) {
-    console.error("Database connection error on competition detail page:", error);
+    console.error(`Failed to load competition [slug=${slug}]:`, error);
   }
 
   if (!competition) {

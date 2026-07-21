@@ -106,7 +106,7 @@ export default async function HomePage() {
       <Header season={competition.season} />
       <main id="main-content" className="flex-1">
         <HeroSection competition={competition} />
-        <MarqueeStrip />
+        <MarqueeStrip competition={competition} />
         <CompetitionSection competition={competition} />
         <HowItWorks steps={competition.steps} />
         <ScoringSection competition={competition} />

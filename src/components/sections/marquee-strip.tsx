@@ -1,15 +1,16 @@
 import React from "react";
 import { brand } from "@/data/brand";
+import { formatPrizes, type Competition } from "@/data/competitions";
 
-export function MarqueeStrip() {
+export function MarqueeStrip({ competition }: { competition: Competition }) {
+  const prizes = formatPrizes(competition);
   const items = [
-    "Compete",
-    "Create",
-    "Win",
-    "Prize \u20B950,000",
+    `Season ${competition.season}`,
+    competition.title,
+    ...(prizes ? [`Prize ${prizes}`] : []),
+    `Entry \u20B9${competition.entryFeeINR}`,
     "API-scored",
     "No judges",
-    "Season 01",
   ];
 
   return (

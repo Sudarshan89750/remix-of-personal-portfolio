@@ -144,8 +144,8 @@ export function RegistrationSection({ competition }: { competition: Competition 
             <ScrollReveal delay={0.2} className="flex flex-col gap-4 mt-2">
               {[
                 { title: "Fill the details", desc: "Share your email, phone, and Instagram handle." },
-                { title: "Complete Payment", desc: "Pay ₹149 securely via UPI QR Code." },
-                { title: "Invite us as Collaborator", desc: "Post your entry Reel and invite @photogigs." },
+                { title: "Complete Payment", desc: `Pay ${formatINR(competition.entryFeeINR)} securely via UPI QR Code.` },
+                { title: "Invite us as Collaborator", desc: "Add @photogigs.in as a collaborator on your post. We'll accept all entries that meet the basic quality guidelines." },
               ].map((step, idx) => (
                 <div key={idx} className="flex gap-4 items-start">
                   <span className="flex items-center justify-center size-7 rounded-lg bg-brand/10 text-brand text-xs font-mono font-bold select-none shrink-0 mt-0.5">
@@ -181,7 +181,7 @@ export function RegistrationSection({ competition }: { competition: Competition 
                         You&apos;re Registered!
                       </h3>
                       <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
-                        To complete your entry, you <strong className="text-foreground">must</strong> invite us as a collaborator on your Reels.
+                        To complete your entry, you <strong className="text-foreground">must</strong> add @photogigs.in as a collaborator on your post.
                       </p>
                     </div>
 
@@ -190,7 +190,7 @@ export function RegistrationSection({ competition }: { competition: Competition 
                         Next Steps:
                       </h4>
                       <ol className="flex flex-col gap-3 text-xs text-muted-foreground list-decimal pl-4 leading-normal">
-                        <li>Post your Reel and tag <span className="font-mono font-bold text-brand">@photogigs.in</span> as a collaborator.</li>
+                        <li>Add <span className="font-mono font-bold text-brand">@photogigs.in</span> as a collaborator on your post.</li>
                         <li>Wait for us to accept the invitation (usually within 12h).</li>
                         <li>Your entry will go live on the public scoreboard!</li>
                       </ol>
@@ -397,7 +397,7 @@ export function RegistrationSection({ competition }: { competition: Competition 
                             Pay {formatINR(competition.entryFeeINR)} using UPI
                           </p>
                           <p className="text-xs text-muted-foreground leading-normal max-w-sm">
-                            Scan the QR code, pay ₹149, and mark your payment status as &quot;Paid&quot; below. Input your Transaction ID for manual verification.
+                            Scan the QR code, pay {formatINR(competition.entryFeeINR)}, and mark your payment status as &quot;Paid&quot; below. Input your Transaction ID for manual verification.
                           </p>
                         </div>
                       </div>

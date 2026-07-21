@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ShieldCheck, CircleDollarSign, Share2, Smartphone, Users } from "lucide-react";
+import { ShieldCheck, Share2, Smartphone, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ScrollReveal } from "../ui/scroll-reveal";
 
@@ -11,12 +11,6 @@ const reasons = [
     title: "No judges. No politics.",
     description: "Audience engagement is the sole metric. The scoreboard is public and API-verified.",
     desktop: "col-span-2" as const,
-  },
-  {
-    icon: CircleDollarSign,
-    title: "Cash. Wired in 7 days.",
-    description: "No coupons or prizes that never arrive. Hard cash via bank transfer within a week.",
-    desktop: "col-span-1 row-span-2" as const,
   },
   {
     icon: Share2,
